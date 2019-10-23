@@ -18,23 +18,23 @@ lastLarvaSpent = scriptStart
 from playsound import playsound
 
 
-#lastActionsBuffer = RingBuffer(capacity=3, dtype=Key) # deprecated
+# lastActionsBuffer = RingBuffer(capacity=3, dtype=Key) # deprecated
 
 
 counter = 0
 bufferSize = 3
 lastActionsBuffer = []
-# tl = Timeloop()
+tl = Timeloop()
 
-# @tl.job(interval=timedelta(seconds=1))
-# def checkMacro():
-    # print "1s job current time : {}".format(time.ctime())
-    # now = time.time()
-    # if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
-        # playsound('macroCycle.mp3')
+@tl.job(interval=timedelta(seconds=1))
+def checkMacro():
+    print "1s job current time : {}".format(time.ctime())
+    now = time.time()
+    if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
+        playsound('macroCycle.mp3')
     
-    # if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
-        # playsound('spendLarva.mp3')
+    if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
+        playsound('spendLarva.mp3')
     
     
 
@@ -42,32 +42,30 @@ lastActionsBuffer = []
 # playsound('macroCycle.mp3')
 # playsound('spendLarva.mp3')
 
-# tl.start(block=False) # do not move this line
+tl.start(block=False) # do not move this line
 
 def checkPlayerActions(lastActionIndex):
-    # global bufferSize
-    
-    print ("lastActionIndex="+str(lastActionIndex))
+    global lastMacroCycle, lastLarvaSpent
     
     if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('u') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('-') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.shift_r:
         lastMacroCycle = time.time()
-        # print ("yay, an inject was detected! lastActionIndex="+str(lastActionIndex))
+        print ("yay, an inject was detected! lastActionIndex="+str(lastActionIndex))
         # playsound('macroCycle.mp3')
 
     if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('o') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('j'): # opj = drones
         lastLarvaSpent= time.time()
-        # print ("yay, drones ware made! lastActionIndex="+str(lastActionIndex))
+        print ("yay, drones ware made! lastActionIndex="+str(lastActionIndex))
         # playsound('spendLarva.mp3')
 
     if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('o') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('p'): # opp = lings
         lastLarvaSpent = time.time()
-        # print ("yay, lings were made! lastActionIndex="+str(lastActionIndex))
+        print ("yay, lings were made! lastActionIndex="+str(lastActionIndex))
         # playsound('spendLarva.mp3')
 
 
