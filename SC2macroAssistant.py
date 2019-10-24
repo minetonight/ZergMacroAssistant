@@ -69,7 +69,7 @@ def checkPlayerActions(lastActionIndex):
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('j'): # opj = drones
         lastLarvaSpent= time.time()
-        print ("yay, drones ware made!")
+        print ("yay, drones were made!")
 
     if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('o') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
@@ -78,7 +78,7 @@ def checkPlayerActions(lastActionIndex):
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('p')  # op[ = hydra
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('h') ): # oph = corruptor
         lastLarvaSpent = time.time()
-        print ("yay, army wes made!")
+        print ("yay, army was made!")
 
 
 def keypress(key):
