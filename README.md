@@ -7,6 +7,7 @@ Every 30 seconds we check if we have injected and raise warning in not.
 # Copyright
 
 macroCycle alert: PiG https://youtu.be/f0chGt6IVBo?t=2964 49:24
+
 spendLarva alert: Lowko https://youtu.be/O3aGlfvQiqo?t=217 3:37
 
 # Hotkeys 
@@ -14,11 +15,19 @@ spendLarva alert: Lowko https://youtu.be/O3aGlfvQiqo?t=217 3:37
 ### I use the core 2.0 so my hotkeys are as follows:
 
 
-u - inject queen hotkey (use 5 on standard layout)
-- - inject ability for queen (use V on standard layout)
-o - all hatcheries (use 4 on standard layout)
-p - select all larva button (use S on standard layout)
-p - lings hotkey (use Z on standard layout) 
-; - roach hotkey (use R on standard layout) 
-[ - hydra hotkey (use H on standard layout)
-h - corruptor hotkey (use C on standard layout)
+u - inject queen hotkey (use 5 on standard layout) 
+
+- - inject ability for queen (use V on standard layout) 
+
+o - all hatcheries (use 4 on standard layout) 
+
+p - select all larva button (use S on standard layout) 
+
+p - lings hotkey (use Z on standard layout)  
+
+; - roach hotkey (use R on standard layout)  
+
+[ - hydra hotkey (use H on standard layout) 
+
+h - corruptor hotkey (use C on standard layout) 
+
