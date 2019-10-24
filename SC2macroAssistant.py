@@ -52,31 +52,34 @@ def checkMacro():
         playsound('spendLarva.mp3')
     
     
-
 tl.start(block=False) # do not move this line
 
 def checkPlayerActions(lastActionIndex):
     global lastMacroCycle, lastLarvaSpent
     
-    
-    if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('u') \
+    # normal cycle or inital hotkey of new queen and inject 
+    if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('u') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('-') \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.shift_r:
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.shift_r) \
+    or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == Key.ctrl \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('u') \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-')): # inital hotkey of new queen and inject 
         lastMacroCycle = time.time()
         print ("yay, an inject was detected!")
 
-    if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('o') \
+    if lastActionsBuffer[(lastActionIndex+1)%bufferSize]  == KeyCode.from_char('o') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('j'): # opj = drones
         lastLarvaSpent= time.time()
         print ("yay, drones were made!")
 
-    if lastActionsBuffer[(lastActionIndex+1)%bufferSize]             == KeyCode.from_char('o') \
+    if lastActionsBuffer[(lastActionIndex+1)%bufferSize]  == KeyCode.from_char('o') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
     and (lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('p')  # opp = lings
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char(';')  # op; = roach
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('p')  # op[ = hydra
-    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('h') ): # oph = corruptor
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('h')  # oph = corruptor
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-') ): # op- = overlord
         lastLarvaSpent = time.time()
         print ("yay, army was made!")
 
