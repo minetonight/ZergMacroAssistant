@@ -57,6 +57,17 @@ tl.start(block=False) # do not move this line
 def checkPlayerActions(lastActionIndex):
     global lastMacroCycle, lastLarvaSpent
     
+    # spam at the start of the game
+    if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('8') \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('0')) \
+    or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('0') \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('0') \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('8')): 
+        lastMacroCycle = time.time()
+        lastLarvaSpent= time.time()
+        print ("So, you are spamming now?")
+    
     # normal cycle or inital hotkey of new queen and inject 
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('u') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('-') \
@@ -77,7 +88,7 @@ def checkPlayerActions(lastActionIndex):
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
     and (lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('p')  # opp = lings
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char(';')  # op; = roach
-    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('p')  # op[ = hydra
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('[')  # op[ = hydra
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('h')  # oph = corruptor
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-') ): # op- = overlord
         lastLarvaSpent = time.time()
