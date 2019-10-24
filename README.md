@@ -31,3 +31,7 @@ p - lings hotkey (use Z on standard layout)
 
 h - corruptor hotkey (use C on standard layout) 
 
+# System settings 
+
+Created and tested on python 2.7 on Windows 10
+All needed packages are installed via pip
