@@ -41,6 +41,20 @@ bufferSize = 3
 lastActionsBuffer = []
 tl = Timeloop()
 
+# TODO 1 check for shift+insert = my inital GLHF thing, to unpause the scriptStart
+# TODO 1 check for F10+n or F10+w or F10+s to stop the script
+# TODO 1 use a flag is_working to set lastMacroCycle = time.time() and lastLarvaSpent= time.time()
+
+# TODO 2 count hints per game (use TODO1) and store the counts in two CSV files, to track improvement.
+# TODO 2 - count hints and store them in an ever growing file, to track players improvement. 
+
+# TODO 3: in more columns: for larva and for injects!
+# Csv:Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
+# Logger basicCofigdatefmt="%d.%m.%Y %H:%M" 
+# Use the specified date/time format, as accepted by time.strftime()
+
+
+
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print "1s job current time : {}".format(time.ctime())
