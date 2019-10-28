@@ -42,12 +42,10 @@ tl = Timeloop()
 
 counter = 0
 is_in_game = False
-larvaHints = 0
+larvaHints = 0 # count hints to track players improvement.
 injectHints = 0
 
-# TODO 2 count hints per game (use TODO1) and store the counts in two CSV files, to track improvement.
-# TODO 2 - count hints and store them in an ever growing file, to track players improvement.
-
+# TODO 3 - count hints and store them in an ever growing file, to track players improvement.
 # TODO 3: in more columns: for larva and for injects!
 # Csv:Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
 # Logger basicCofigdatefmt="%d.%m.%Y %H:%M" 
@@ -58,13 +56,18 @@ injectHints = 0
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print "1s job current time : {}".format(time.ctime())
+    global injectHints, larvaHints
     
     if is_in_game:
         now = time.time()
         if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
+            # count hints to track players improvement.
+            injectHints = injectHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
             playsound('macroCycle.mp3')
         
         if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
+            # count hints to track players improvement.
+            larvaHints = larvaHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
             playsound('spendLarva.mp3')
     
     
@@ -97,6 +100,8 @@ def checkPlayerActions(lastActionIndex):
         is_in_game = False
         print ("Geeee Geeee!")
         # TODO 2 - count hints and store them in an ever growing file, to track players improvement.
+        print("injectHints = " + str(injectHints))
+        print("larvaHints = " + str(larvaHints))
         playsound("gg.mp3")
     
     # spam at the start of the game
