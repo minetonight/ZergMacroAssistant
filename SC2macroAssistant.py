@@ -14,6 +14,7 @@ from datetime import timedelta
 from playsound import playsound
 
 import logging
+import thread
 
 '''
 I use the core 2.0 so my hotkeys are as follows:
@@ -54,6 +55,15 @@ logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 
+def soundEffect(filename, blocking = True):
+    if blocking:
+        playsound(filename)
+    else:        
+        try:
+           thread.start_new_thread(playsound, (filename, ))
+        except:
+           print "Error: unable to start thread"
+
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print "1s job current time : {}".format(time.ctime())
@@ -64,12 +74,12 @@ def checkMacro():
         if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
             # count hints to track players improvement.
             injectHints = injectHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
-            playsound('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
+            soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
             
         if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
             # count hints to track players improvement.
             larvaHints = larvaHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
-            playsound('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
+            soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
     
     
 tl.start(block=False) # do not move this line
@@ -111,7 +121,7 @@ def checkPlayerActions(lastActionIndex):
         
         is_in_game = True
         print("GL HF to you, too!")
-        playsound("diamond x2.mp3")
+        soundEffect("diamond x2.mp3", blocking=False)
         
     # check for F10+n or F10+w or F10+s to stop the script
     if (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
@@ -123,7 +133,7 @@ def checkPlayerActions(lastActionIndex):
         is_in_game = False
         print("Geeee Geeee!")
         storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
-        playsound("gg.mp3")
+        soundEffect("gg.mp3", blocking=False)
     
     # spam at the start of the game
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
