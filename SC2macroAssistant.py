@@ -15,6 +15,7 @@ from playsound import playsound
 
 import logging
 import thread
+import locale
 
 '''
 I use the core 2.0 so my hotkeys are as follows:
@@ -92,14 +93,22 @@ def storeStatsInFile():
     # Csv: Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
     scriptEnd = time.time()
     gameDurationSeconds = scriptEnd - scriptStart
-    gameDurationMinutes = "%d:%02d" % (gameDurationSeconds/60, gameDurationSeconds%60)
+    gameDurationMinutes = "%02d:%02d" % (gameDurationSeconds/60, gameDurationSeconds%60)
     keysCount = counter
+    
     larvaHPM = (larvaHints/gameDurationSeconds) * 60
     injectHPM = (injectHints/gameDurationSeconds) * 60
     KPM = (counter/gameDurationSeconds) * 60
+    
+    locale.setlocale(locale.LC_NUMERIC, 'Bulgarian') # 32 757 121,33
+    larvaHPM_str = locale.format("%.2f", larvaHPM)
+    injectHPM_str = locale.format("%.2f", injectHPM)
+    
+    # SQ = input("What was your SQ that game? ") # deprecated idea, can't force that input, and may break next game
+    SQ = "??"
     # print("%d:%02d, %.2f" % (3, 3, 3.141516)) # 3:03, 3.14
     
-    csvLine = "%d, %s, %d, %d, %d, %.2f, %.2f, %d" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM)
+    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ)
     print("csvLine = " + csvLine)
     logger.info(csvLine)
 
@@ -125,15 +134,15 @@ def checkPlayerActions(lastActionIndex):
         
     # check for F10+n or F10+w or F10+s to stop the script
     if (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] ==KeyCode.from_char('n')) \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('n')) \
     or (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] ==KeyCode.from_char('w')) \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('w')) \
     or (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] ==KeyCode.from_char('s')): 
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('s')): 
         is_in_game = False
         print("Geeee Geeee!")
-        storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
         soundEffect("gg.mp3", blocking=False)
+        storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
     
     # spam at the start of the game
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
