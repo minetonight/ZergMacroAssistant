@@ -82,13 +82,14 @@ def storeStatsInFile():
     # Csv: Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
     scriptEnd = time.time()
     gameDurationSeconds = scriptEnd - scriptStart
-    gameDurationMinutes = "%d:%d" % (gameDurationSeconds/60, gameDurationSeconds%60)
+    gameDurationMinutes = "%d:%02d" % (gameDurationSeconds/60, gameDurationSeconds%60)
     keysCount = counter
     larvaHPM = (larvaHints/gameDurationSeconds) * 60
     injectHPM = (injectHints/gameDurationSeconds) * 60
     KPM = (counter/gameDurationSeconds) * 60
+    # print("%d:%02d, %.2f" % (3, 3, 3.141516)) # 3:03, 3.14
     
-    csvLine = "%d, %s, %d, %d, %d, %d, %d, %d" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM)
+    csvLine = "%d, %s, %d, %d, %d, %.2f, %.2f, %d" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM)
     print("csvLine = " + csvLine)
     logger.info(csvLine)
 
