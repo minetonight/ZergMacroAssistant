@@ -2,7 +2,7 @@
 # https://www.tutorialspoint.com/design-a-keylogger-in-python
 # https://gist.github.com/jamesgeorge007/cb68fedd8419721f6f4c7a7643181974
 
-from pynput.keyboard import Key, KeyCode, Listener
+from pynput.keyboard import Key, KeyCode, Listener # https://pythonhosted.org/pynput/keyboard.html
 import numpy as np
 # https://pypi.org/project/numpy_ringbuffer/ 
 # doc https://github.com/eric-wieser/numpy_ringbuffer/blob/master/numpy_ringbuffer/__init__.py
@@ -36,21 +36,21 @@ scriptStart = time.time() # https://www.programiz.com/python-programming/time
 lastMacroCycle = scriptStart
 lastLarvaSpent = scriptStart
 
-counter = 0
 bufferSize = 3
 lastActionsBuffer = []
 tl = Timeloop()
 
-# TODO 1 check for shift+insert = my inital GLHF thing, to unpause the scriptStart
-# TODO 1 check for F10+n or F10+w or F10+s to stop the script
-# TODO 1 use a flag is_working to set lastMacroCycle = time.time() and lastLarvaSpent= time.time()
+counter = 0
+is_in_game = False
+larvaHints = 0
+injectHints = 0
 
 # TODO 2 count hints per game (use TODO1) and store the counts in two CSV files, to track improvement.
-# TODO 2 - count hints and store them in an ever growing file, to track players improvement. 
+# TODO 2 - count hints and store them in an ever growing file, to track players improvement.
 
 # TODO 3: in more columns: for larva and for injects!
 # Csv:Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
-# Logger basicCofigdatefmt="%d.%m.%Y %H:%M" 
+# Logger basicCofigdatefmt="%d.%m.%Y %H:%M" 
 # Use the specified date/time format, as accepted by time.strftime()
 
 
@@ -58,18 +58,46 @@ tl = Timeloop()
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print "1s job current time : {}".format(time.ctime())
-    now = time.time()
-    if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
-        playsound('macroCycle.mp3')
     
-    if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
-        playsound('spendLarva.mp3')
+    if is_in_game:
+        now = time.time()
+        if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
+            playsound('macroCycle.mp3')
+        
+        if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
+            playsound('spendLarva.mp3')
     
     
 tl.start(block=False) # do not move this line
 
 def checkPlayerActions(lastActionIndex):
     global lastMacroCycle, lastLarvaSpent
+    global counter, is_in_game, larvaHints, injectHints
+    
+    # check for shift+insert = my inital GLHF thing, to unpause the script
+    if (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.shift_r \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.insert): 
+        lastMacroCycle = time.time()
+        lastLarvaSpent = time.time()
+        counter = 0
+        is_in_game = True
+        larvaHints = 0
+        injectHints = 0
+        print ("GL HF to you, too!")
+        playsound("diamond x2.mp3")
+        
+    
+    # check for F10+n or F10+w or F10+s to stop the script
+    if (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] ==KeyCode.from_char('n')) \
+    or (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] ==KeyCode.from_char('w')) \
+    or (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] ==KeyCode.from_char('s')): 
+        is_in_game = False
+        print ("Geeee Geeee!")
+        # TODO 2 - count hints and store them in an ever growing file, to track players improvement.
+        playsound("gg.mp3")
     
     # spam at the start of the game
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
