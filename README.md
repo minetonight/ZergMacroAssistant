@@ -24,7 +24,7 @@ Outro: WinterSC2 https://youtu.be/COV6bm_h0zc
 
 u - inject queen hotkey (use 5 on standard layout) 
 
-- - inject ability for queen (use V on standard layout) 
+'- - inject ability for queen (use V on standard layout) 
 
 o - all hatcheries (use 4 on standard layout) 
 
