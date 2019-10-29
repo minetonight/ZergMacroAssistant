@@ -56,6 +56,8 @@ logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 
+print("Hello, my name is Larry Crojerg, larva and macro injecting AI coach for zerg. ") 
+
 def soundEffect(filename, blocking = True):
     if blocking:
         playsound(filename)
