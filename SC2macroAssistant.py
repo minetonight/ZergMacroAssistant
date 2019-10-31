@@ -161,9 +161,15 @@ def checkPlayerActions(lastActionIndex):
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('u') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('-') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.shift_r) \
-    or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == Key.ctrl \
+    or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == Key.ctrl_r \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('u') \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-')): # inital hotkey of new queen and inject 
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-')) \
+    or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('-') \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == Key.ctrl_r \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('u'))\
+    or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == Key.ctrl_r \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == Key.ctrl_r \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('u')): # inital hotkey of new queen and inject 
         lastMacroCycle = time.time()
         print("yay, an inject was detected!")
 
