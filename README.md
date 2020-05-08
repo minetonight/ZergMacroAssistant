@@ -43,6 +43,12 @@ h - corruptor hotkey (use C on standard layout)
 Created and tested on python 2.7 on Windows 10
 All needed packages are installed via pip
 
+https://www.makeuseof.com/tag/install-pip-for-python/
+pip install pynput 
+pip3 install timeloop
+pip3 install playsound # for Windows
+pip3 install pygame # for Linux
+
 
 ### Working with tags reference
 https://git-scm.com/book/en/v2/Git-Basics-Tagging

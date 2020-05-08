@@ -11,11 +11,13 @@ import time
 from timeloop import Timeloop # https://medium.com/greedygame-engineering/an-elegant-way-to-run-periodic-tasks-in-python-61b7c477b679
 from datetime import timedelta
 
-from playsound import playsound
+from playsound import playsound # Windows users
+from pygame import mixer # linux people; https://stackoverflow.com/a/56621821
 
 import logging
-import thread
+from threading import Thread
 import locale
+
 
 '''
 I use the core 2.0 so my hotkeys are as follows:
@@ -40,6 +42,8 @@ counter = 0
 larvaHints = 0 # count hints to track players improvement.
 larvaHints = 0
 injectHints = 0
+larvaHintsPeriod = 15
+injectHintsPeriod = 60
 is_in_game = False
 
 bufferSize = 3
@@ -58,28 +62,57 @@ logger.addHandler(handler)
 
 print("Hello, my name is Larry Crojerg, larva and macro injecting AI coach for zerg. ") 
 
-def soundEffect(filename, blocking = True):
-    if blocking:
-        playsound(filename)
-    else:        
-        try:
-           thread.start_new_thread(playsound, (filename, ))
-        except:
-           print "Error: unable to start thread"
+mixer.init()
 
+
+def soundEffect(filename, blocking = True):
+    #playsound(filename)
+    
+    mixer.music.load(filename)
+    mixer.music.play()
+    while mixer.music.get_busy() == True:
+        continue
+    
+    if blocking:
+        pass
+        # TODO research more how to play parallel sounds in pygame
+        #oggSound = mixer.Sound("a.ogg")
+        #mixer.Sound.play(oggSound)
+        #sleep(5)
+        #larvaSound = mixer.Sound('spendLarva.mp3')
+        #ggSound = mixer.Sound("gg.mp3")
+        #macroSound = mixer.Sound("macroCycle.mp3")
+        #diamondSound = mixer.Sound("diamond x2.mp3")
+        #diamondSound.play()
+    else:   
+        pass
+        #mixer.music.load(filename)
+        #mixer.music.play()
+
+
+
+
+### TODO research more how to play parallel sounds in pygame
+#soundEffect('spendLarva.mp3')
+#soundEffect("gg.mp3", blocking=False)
+#soundEffect('spendLarva.mp3')
+
+    
+    
+    
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
-    print "1s job current time : {}".format(time.ctime())
+    print("1s job current time : {}".format(time.ctime()))
     global injectHints, larvaHints
     
     if is_in_game:
         now = time.time()
-        if lastMacroCycle+30 <= now: # lastCycle=30 // now=45 // now = 61
+        if lastMacroCycle+injectHintsPeriod <= now: # lastCycle=30 // now=45 // now = 61
             # count hints to track players improvement.
             injectHints = injectHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
             soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
             
-        if lastLarvaSpent+15 <= now: # lastlarva=30 // now=45 // now = 61
+        if lastLarvaSpent+larvaHintsPeriod <= now: # lastlarva=30 // now=45 // now = 61
             # count hints to track players improvement.
             larvaHints = larvaHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
             soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
@@ -102,9 +135,9 @@ def storeStatsInFile():
     injectHPM = (injectHints/gameDurationSeconds) * 60
     KPM = (counter/gameDurationSeconds) * 60
     
-    locale.setlocale(locale.LC_NUMERIC, 'Bulgarian') # 32 757 121,33
-    larvaHPM_str = locale.format("%.2f", larvaHPM)
-    injectHPM_str = locale.format("%.2f", injectHPM)
+    #locale.setlocale(locale.LC_NUMERIC, 'Bulgarian') # 32 757 121,33
+    larvaHPM_str = locale.format_string("%.2f", larvaHPM)
+    injectHPM_str = locale.format_string("%.2f", injectHPM)
     
     # SQ = input("What was your SQ that game? ") # deprecated idea, can't force that input, and may break next game
     SQ = "??"
