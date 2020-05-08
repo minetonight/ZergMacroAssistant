@@ -42,3 +42,7 @@ h - corruptor hotkey (use C on standard layout)
 
 Created and tested on python 2.7 on Windows 10
 All needed packages are installed via pip
+
+
+### Working with tags reference
+https://git-scm.com/book/en/v2/Git-Basics-Tagging
