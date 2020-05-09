@@ -2,7 +2,7 @@
 # https://www.tutorialspoint.com/design-a-keylogger-in-python
 # https://gist.github.com/jamesgeorge007/cb68fedd8419721f6f4c7a7643181974
 
-from pynput.keyboard import Key, KeyCode, Listener # https://pythonhosted.org/pynput/keyboard.html
+from pynput.keyboard import Key, KeyCode, Listener, Controller # https://pythonhosted.org/pynput/keyboard.html
 import numpy as np
 # https://pypi.org/project/numpy_ringbuffer/ 
 # doc https://github.com/eric-wieser/numpy_ringbuffer/blob/master/numpy_ringbuffer/__init__.py
@@ -44,6 +44,8 @@ larvaHints = 0
 injectHints = 0
 larvaHintsPeriod = 15
 injectHintsPeriod = 60
+larvaRuleDimsScreen = True # every player must lose a finger if he breaks the larva rule.
+
 is_in_game = False
 
 bufferSize = 3
@@ -58,6 +60,8 @@ handler.setFormatter(formatter)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
+keyboard = Controller() # https://nitratine.net/blog/post/simulate-keypresses-in-python/
+
 
 
 print("Hello, my name is Larry Crojerg, larva and macro injecting AI coach for zerg. ") 
@@ -98,6 +102,40 @@ def soundEffect(filename, blocking = True):
 #soundEffect('spendLarva.mp3')
 
     
+def interruptPlayer():
+    # stop sound effects
+    keyboard.press(Key.f11)
+    keyboard.release(Key.f11)
+    # stop music
+    keyboard.press(Key.f12)
+    keyboard.release(Key.f12)
+    
+    # dim the screen 5 steps
+    for i in range(21): 
+        keyboard.press(Key.alt)
+        keyboard.press(Key.page_down)
+        keyboard.release(Key.page_down)
+        keyboard.release(Key.alt)
+        time.sleep(0.1)
+    
+    time.sleep(5)
+    
+    # restore screen brightness
+    for i in range(21): 
+        keyboard.press(Key.alt)
+        keyboard.press(Key.page_up)
+        keyboard.release(Key.page_up)
+        keyboard.release(Key.alt)
+        time.sleep(0.1)
+    
+    # resume sound effects
+    keyboard.press(Key.f11)
+    keyboard.release(Key.f11)
+    # resume music
+    keyboard.press(Key.f12)
+    keyboard.release(Key.f12)
+    
+    
     
     
 @tl.job(interval=timedelta(seconds=1))
@@ -116,7 +154,9 @@ def checkMacro():
             # count hints to track players improvement.
             larvaHints = larvaHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
             soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
-    
+            if larvaRuleDimsScreen:
+                interruptPlayer()   
+
     
 tl.start(block=False) # do not move this line
 
