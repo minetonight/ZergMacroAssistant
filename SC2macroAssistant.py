@@ -30,6 +30,12 @@ I use the core 2.0 so my hotkeys are as follows:
  ; - roach hotkey (use R on standard layout)
  [ - hydra hotkey (use H on standard layout)
  h - corruptor hotkey (use C on standard layout)
+ 
+ F11 = toggle sound effects
+ F12 = toggle music
+ 
+ Win+PgUp = increase screen brightness
+ Win+PgDn = decrease screen brightness
 '''
 
 # cmd.exe /K "cd C:\Users\Teacher\Documents\StarCraft II\MacroAssistant == start shell in specific folder
@@ -112,20 +118,20 @@ def interruptPlayer():
     
     # dim the screen 5 steps
     for i in range(21): 
-        keyboard.press(Key.alt)
+        keyboard.press(Key.cmd)
         keyboard.press(Key.page_down)
         keyboard.release(Key.page_down)
-        keyboard.release(Key.alt)
+        keyboard.release(Key.cmd)
         time.sleep(0.1)
     
-    time.sleep(5)
+    time.sleep(0.5)
     
     # restore screen brightness
     for i in range(21): 
-        keyboard.press(Key.alt)
+        keyboard.press(Key.cmd)
         keyboard.press(Key.page_up)
         keyboard.release(Key.page_up)
-        keyboard.release(Key.alt)
+        keyboard.release(Key.cmd)
         time.sleep(0.1)
     
     # resume sound effects
@@ -141,7 +147,7 @@ def interruptPlayer():
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print("1s job current time : {}".format(time.ctime()))
-    global injectHints, larvaHints
+    global injectHints, larvaHints, lastLarvaSpent
     
     if is_in_game:
         now = time.time()
@@ -155,8 +161,8 @@ def checkMacro():
             larvaHints = larvaHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
             soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
             if larvaRuleDimsScreen:
-                interruptPlayer()   
-
+                interruptPlayer()
+                lastLarvaSpent = time.time()
     
 tl.start(block=False) # do not move this line
 
@@ -271,7 +277,6 @@ def keypress(key):
     lastActionsBuffer[counter%bufferSize] = key
     checkPlayerActions(counter%bufferSize)
     print(np.array(lastActionsBuffer))
-    # lastActionsBuffer.append(key)
     
     counter = counter + 1
     

@@ -43,9 +43,9 @@ F12 = toggle music
 
 # System settings 
 
-Alt+PgUp = increase screen brightness
+Win+PgUp = increase screen brightness
 
-Alt+PgDn = decrease screen brightness
+Win+PgDn = decrease screen brightness
 
 Created and tested on python 2.7 on Windows 10.
 
