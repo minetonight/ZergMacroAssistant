@@ -48,7 +48,7 @@ counter = 0
 larvaHints = 0 # count hints to track players improvement.
 larvaHints = 0
 injectHints = 0
-larvaHintsPeriod = 15
+larvaHintsPeriod = 17
 injectHintsPeriod = 60
 larvaRuleDimsScreen = True # every player must lose a finger if he breaks the larva rule.
 
@@ -162,7 +162,7 @@ def checkMacro():
             soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
             if larvaRuleDimsScreen:
                 interruptPlayer()
-                lastLarvaSpent = time.time()
+            lastLarvaSpent = time.time()
     
 tl.start(block=False) # do not move this line
 
@@ -264,6 +264,11 @@ def checkPlayerActions(lastActionIndex):
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char(';')  # op; = roach
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('[')  # op[ = hydra
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('h')  # oph = corruptor
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('m')  # opm = muta
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('b')  # opm = infestor
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('n')  # opm = sw host
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('g')  # opm = viper
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('=')  # opm = ultra
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-') ): # op- = overlord
         lastLarvaSpent = time.time()
         print("yay, army was made!")
