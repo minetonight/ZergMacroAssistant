@@ -153,16 +153,17 @@ def checkMacro():
         now = time.time()
         if lastMacroCycle+injectHintsPeriod <= now: # lastCycle=30 // now=45 // now = 61
             # count hints to track players improvement.
-            injectHints = injectHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
+            injectHints = injectHints + 1 
             soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
+            lastMacroCycle = time.time() # hint once and leave it
             
         if lastLarvaSpent+larvaHintsPeriod <= now: # lastlarva=30 // now=45 // now = 61
             # count hints to track players improvement.
-            larvaHints = larvaHints + 1 # TODO dont count the same hint too many times, wait for the player to execute it before you count again
+            larvaHints = larvaHints + 1 
             soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
             if larvaRuleDimsScreen:
                 interruptPlayer()
-            lastLarvaSpent = time.time()
+            lastLarvaSpent = time.time() # hint once and leave it
     
 tl.start(block=False) # do not move this line
 
@@ -197,7 +198,7 @@ def checkPlayerActions(lastActionIndex):
     global lastMacroCycle, lastLarvaSpent
     global counter, is_in_game, larvaHints, injectHints, scriptStart
     
-    # check for shift+insert = my inital GLHF thing, to unpause the script
+    # check for shift+insert = my initial GLHF thing, to unpause the script
     if (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.shift_r \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.insert): 
         
@@ -236,7 +237,7 @@ def checkPlayerActions(lastActionIndex):
         lastLarvaSpent= time.time()
         print("So, you are spamming now?")
     
-    # normal cycle or inital hotkey of new queen and inject 
+    # normal cycle or initial hotkey of new queen and inject 
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('u') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('-') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == Key.shift_r) \
@@ -248,7 +249,7 @@ def checkPlayerActions(lastActionIndex):
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('u'))\
     or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == Key.ctrl_r \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == Key.ctrl_r \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('u')): # inital hotkey of new queen and inject 
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('u')): # initial hotkey of new queen and inject 
         lastMacroCycle = time.time()
         print("yay, an inject was detected!")
 
