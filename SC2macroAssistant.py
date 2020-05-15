@@ -147,7 +147,7 @@ def interruptPlayer():
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print("1s job current time : {}".format(time.ctime()))
-    global injectHints, larvaHints, lastLarvaSpent
+    global injectHints, larvaHints, lastLarvaSpent, lastMacroCycle
     
     if is_in_game:
         now = time.time()
