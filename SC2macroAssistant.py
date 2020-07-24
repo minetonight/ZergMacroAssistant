@@ -50,7 +50,8 @@ larvaHints = 0
 injectHints = 0
 larvaHintsPeriod = 17
 injectHintsPeriod = 60
-larvaRuleDimsScreen = True # every player must lose a finger if he breaks the larva rule.
+# larvaRuleDimsScreen = False # every player must lose a finger if he breaks the larva rule.
+larvaRuleDimsScreen = True  # every player must lose a finger if he breaks the larva rule.
 
 is_in_game = False
 
