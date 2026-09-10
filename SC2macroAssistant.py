@@ -175,7 +175,7 @@ def checkMacro():
             # count hints to track players improvement.
             ovieHints = ovieHints + 1 
             if not silentHints:
-                soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
+                soundEffect('more-overlords-winter.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
             lastOvieMade = time.time() # hint once and leave it
             
         if lastLarvaSpent+larvaHintsPeriod <= now: # lastlarva=30 // now=45 // now = 61
@@ -216,7 +216,7 @@ def storeStatsInFile():
     # print("%d:%02d, %.2f" % (3, 3, 3.141516)) # 3:03, 3.14
     comment = "larvaHintsPeriod = " + str(larvaHintsPeriod)
     
-    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ, comment, ovieHints, oviesHPM_str)
+    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s, %s, %d, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ, comment, ovieHints, oviesHPM_str)
     print("csvLine = " + csvLine)
     logger.info(csvLine)
 
@@ -254,13 +254,13 @@ def checkPlayerActions(lastActionIndex):
             soundEffect("gg.mp3", blocking=False)
             storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
     
-    # spam at the start of the game
-    if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
-    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('8') \
+    # spam at the start of the game, first and second ovies are in control groups for spellcasters and drop-defence/nydus
+    if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('7') \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('7') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('0')) \
     or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('0') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('0') \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('8')): 
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('7')): 
         lastMacroCycle = time.time()
         lastLarvaSpent = time.time()
         lastOvieMade   = time.time()
