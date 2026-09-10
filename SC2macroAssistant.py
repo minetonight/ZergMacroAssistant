@@ -44,12 +44,14 @@ I use the core 2.0 so my hotkeys are as follows:
 scriptStart = time.time() # https://www.programiz.com/python-programming/time
 lastMacroCycle = scriptStart
 lastLarvaSpent = scriptStart
+lastOvieMade = scriptStart
 counter = 0
 larvaHints = 0 # count hints to track players improvement.
-larvaHints = 0
+ovieHints = 0
 injectHints = 0
-larvaHintsPeriod = 17
-injectHintsPeriod = 60
+larvaHintsPeriod = 20
+overlordsHintsPeriod = 40
+injectHintsPeriod = 40
 silentHints = False
 # silentHints = True
 helping_duration_of_9min = 10*60
@@ -151,7 +153,7 @@ def interruptPlayer():
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print("1s job current time : {}".format(time.ctime()))
-    global injectHints, larvaHints, lastLarvaSpent, lastMacroCycle, scriptStart, helping_duration_of_9min, is_in_game, silentHints
+    global ovieHints, lastOvieMade, overlordsHintsPeriod, injectHints, larvaHints, lastLarvaSpent, lastMacroCycle, scriptStart, helping_duration_of_9min, is_in_game, silentHints
     
     if is_in_game:
         now = time.time()
@@ -168,6 +170,13 @@ def checkMacro():
             if not silentHints:
                 soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
             lastMacroCycle = time.time() # hint once and leave it
+
+        if lastOvieMade+overlordsHintsPeriod <= now: # lastCycle=30 // now=45 // now = 61
+            # count hints to track players improvement.
+            ovieHints = ovieHints + 1 
+            if not silentHints:
+                soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
+            lastOvieMade = time.time() # hint once and leave it
             
         if lastLarvaSpent+larvaHintsPeriod <= now: # lastlarva=30 // now=45 // now = 61
             # count hints to track players improvement.
@@ -184,7 +193,7 @@ def storeStatsInFile():
     # count hints and store them in an ever growing file, to track players improvement
     # in many columns: for larva and for injects!
     
-    global counter, larvaHints, injectHints, scriptStart
+    global counter, larvaHints, injectHints, ovieHints, scriptStart
     # Csv: Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
     scriptEnd = time.time()
     gameDurationSeconds = scriptEnd - scriptStart
@@ -193,24 +202,27 @@ def storeStatsInFile():
     
     larvaHPM = (larvaHints/gameDurationSeconds) * 60
     injectHPM = (injectHints/gameDurationSeconds) * 60
+    oviesHPM = (ovieHints/gameDurationSeconds) * 60
     KPM = (counter/gameDurationSeconds) * 60
     
     #locale.setlocale(locale.LC_NUMERIC, 'Bulgarian') # 32 757 121,33
     larvaHPM_str = locale.format_string("%.2f", larvaHPM)
     injectHPM_str = locale.format_string("%.2f", injectHPM)
+    oviesHPM_str = locale.format_string("%.2f", oviesHPM)
+
     
     # SQ = input("What was your SQ that game? ") # deprecated idea, can't force that input, and may break next game
     SQ = "??"
     # print("%d:%02d, %.2f" % (3, 3, 3.141516)) # 3:03, 3.14
     comment = "larvaHintsPeriod = " + str(larvaHintsPeriod)
     
-    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ, comment)
+    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ, comment, ovieHints, oviesHPM_str)
     print("csvLine = " + csvLine)
     logger.info(csvLine)
 
 def checkPlayerActions(lastActionIndex):
-    global lastMacroCycle, lastLarvaSpent
-    global counter, is_in_game, larvaHints, injectHints, scriptStart
+    global lastMacroCycle, lastLarvaSpent, lastOvieMade
+    global counter, is_in_game, larvaHints, injectHints, ovieHints, scriptStart
     
     # check for shift+insert = my initial GLHF thing, to unpause the script
     if (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.shift_r \
@@ -219,10 +231,11 @@ def checkPlayerActions(lastActionIndex):
         scriptStart = time.time()
         lastMacroCycle = scriptStart
         lastLarvaSpent = scriptStart
+        lastOvieMade = scriptStart
         counter = 0
         larvaHints = 0 
-        larvaHints = 0
         injectHints = 0
+        ovieHints = 0
         
         is_in_game = True
         print("GL HF to you, too!")
@@ -249,7 +262,8 @@ def checkPlayerActions(lastActionIndex):
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('0') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('8')): 
         lastMacroCycle = time.time()
-        lastLarvaSpent= time.time()
+        lastLarvaSpent = time.time()
+        lastOvieMade   = time.time()
         print("So, you are spamming now?")
     
     # normal cycle or initial hotkey of new queen and inject 
@@ -284,10 +298,17 @@ def checkPlayerActions(lastActionIndex):
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('b')  # opm = infestor
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('n')  # opm = sw host
     or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('g')  # opm = viper
-    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('=')  # opm = ultra
-    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-') ): # op- = overlord
+    or lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('=')):  # opm = ultra
         lastLarvaSpent = time.time()
         print("yay, army was made!")
+
+
+    if lastActionsBuffer[(lastActionIndex+1)%bufferSize]  == KeyCode.from_char('o') \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('p') \
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('-') : # op- = overlord
+        lastOvieMade = time.time()
+        lastLarvaSpent = time.time()
+        print("yay, more overlords!")
 
 
 def keypress(key):
