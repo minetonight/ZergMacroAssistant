@@ -50,8 +50,11 @@ larvaHints = 0
 injectHints = 0
 larvaHintsPeriod = 17
 injectHintsPeriod = 60
-# larvaRuleDimsScreen = False # every player must lose a finger if he breaks the larva rule.
-larvaRuleDimsScreen = True  # every player must lose a finger if he breaks the larva rule.
+silentHints = False
+# silentHints = True
+helping_duration_of_9min = 10*60
+larvaRuleDimsScreen = False # every player must lose a finger if he breaks the larva rule.
+# larvaRuleDimsScreen = True  # every player must lose a finger if he breaks the larva rule.
 
 is_in_game = False
 
@@ -148,20 +151,29 @@ def interruptPlayer():
 @tl.job(interval=timedelta(seconds=1))
 def checkMacro():
     print("1s job current time : {}".format(time.ctime()))
-    global injectHints, larvaHints, lastLarvaSpent, lastMacroCycle
+    global injectHints, larvaHints, lastLarvaSpent, lastMacroCycle, scriptStart, helping_duration_of_9min, is_in_game, silentHints
     
     if is_in_game:
         now = time.time()
+        
+        # stop helping in the late mid-game
+        if now - scriptStart > helping_duration_of_9min:
+            is_in_game = False
+            soundEffect('youAreMaxed.mp3')
+            storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
+        
         if lastMacroCycle+injectHintsPeriod <= now: # lastCycle=30 // now=45 // now = 61
             # count hints to track players improvement.
             injectHints = injectHints + 1 
-            soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
+            if not silentHints:
+                soundEffect('macroCycle.mp3') # https://youtu.be/f0chGt6IVBo?t=2964 49:24
             lastMacroCycle = time.time() # hint once and leave it
             
         if lastLarvaSpent+larvaHintsPeriod <= now: # lastlarva=30 // now=45 // now = 61
             # count hints to track players improvement.
             larvaHints = larvaHints + 1 
-            soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
+            if not silentHints:
+                soundEffect('spendLarva.mp3') # https://youtu.be/O3aGlfvQiqo?t=217 3:37
             if larvaRuleDimsScreen:
                 interruptPlayer()
             lastLarvaSpent = time.time() # hint once and leave it
@@ -190,8 +202,9 @@ def storeStatsInFile():
     # SQ = input("What was your SQ that game? ") # deprecated idea, can't force that input, and may break next game
     SQ = "??"
     # print("%d:%02d, %.2f" % (3, 3, 3.141516)) # 3:03, 3.14
+    comment = "larvaHintsPeriod = " + str(larvaHintsPeriod)
     
-    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ)
+    csvLine = "%d, %s, %d, %d, %d, \"%s\", \"%s\", %d, %s, %s" % (gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM_str, injectHPM_str, KPM, SQ, comment)
     print("csvLine = " + csvLine)
     logger.info(csvLine)
 
@@ -222,10 +235,11 @@ def checkPlayerActions(lastActionIndex):
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('w')) \
     or (lastActionsBuffer[(lastActionIndex-1)%bufferSize] == Key.f10 \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('s')): 
-        is_in_game = False
-        print("Geeee Geeee!")
-        soundEffect("gg.mp3", blocking=False)
-        storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
+        if is_in_game: 
+            is_in_game = False
+            print("Geeee Geeee!")
+            soundEffect("gg.mp3", blocking=False)
+            storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
     
     # spam at the start of the game
     if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
