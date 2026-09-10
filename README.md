@@ -6,6 +6,8 @@ Circular buffer of the last three keys that were pressed.
 Every 15 seconds we check if we have used larva and raise warning in not.
 Every 30 seconds we check if we have injected and raise warning in not.
 
+Adds to a CSV table your stats after each game and can be setup to silent mode, so that it only measures in the background.
+
 # Copyright
 
 Intro: Diamonds by Rihanna https://youtu.be/lWA2pjMjpBs
@@ -58,6 +60,8 @@ https://www.makeuseof.com/tag/install-pip-for-python/
 pip install pynput 
 
 pip3 install timeloop
+
+pip3 install numpy
 
 pip3 install playsound # for Windows
 
