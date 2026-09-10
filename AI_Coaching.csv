@@ -1,4 +1,4 @@
-Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM, SQ,comment
+Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM, SQ,comment,ovieHints,oviesHPM
 28.10.2019 23:57,663, 11:03,35,33,2954,3,2,267,125,
 29.10.2019 00:13,575, 09:35,26,37,2079,2.71,3.85,216,81,
 29.10.2019 01:00,796, 13:16,41,39,2954,3.09,2.94,222,107,

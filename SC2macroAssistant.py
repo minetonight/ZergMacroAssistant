@@ -194,7 +194,7 @@ def storeStatsInFile():
     # in many columns: for larva and for injects!
     
     global counter, larvaHints, injectHints, ovieHints, scriptStart
-    # Csv: Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM
+    # Csv: Datetime, gameDurationSeconds, gameDurationMinutes, larvaHints, injectHints, keysCount, larvaHPM, injectHPM, KPM, SQ, comment, ovieHints, oviesHPM_str
     scriptEnd = time.time()
     gameDurationSeconds = scriptEnd - scriptStart
     gameDurationMinutes = "%02d:%02d" % (gameDurationSeconds/60, gameDurationSeconds%60)
@@ -255,12 +255,12 @@ def checkPlayerActions(lastActionIndex):
             storeStatsInFile() # count hints and store them in an ever growing file, to track players improvement.
     
     # spam at the start of the game, first and second ovies are in control groups for spellcasters and drop-defence/nydus
-    if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('7') \
-    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('7') \
+    if (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('8') \
+    and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('8') \
     and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('0')) \
     or (lastActionsBuffer[(lastActionIndex+1)%bufferSize] == KeyCode.from_char('0') \
     and lastActionsBuffer[(lastActionIndex+2)%bufferSize] == KeyCode.from_char('0') \
-    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('7')): 
+    and lastActionsBuffer[(lastActionIndex+0)%bufferSize] == KeyCode.from_char('8')): 
         lastMacroCycle = time.time()
         lastLarvaSpent = time.time()
         lastOvieMade   = time.time()
